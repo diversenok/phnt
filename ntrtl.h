@@ -2571,6 +2571,7 @@ typedef struct _RTL_USER_PROCESS_PARAMETERS
 
     ULONG_PTR EnvironmentSize;
     ULONG_PTR EnvironmentVersion;
+
     PVOID PackageDependencyData;
     ULONG ProcessGroupId;
     ULONG LoaderThreads;
@@ -5204,6 +5205,15 @@ RtlSecondsSince1970ToTime(
     _Out_ PLARGE_INTEGER Time
     );
 
+#if (PHNT_VERSION >= PHNT_WIN8)
+NTSYSAPI
+ULONGLONG
+NTAPI
+RtlGetSystemTimePrecise(
+    VOID
+    );
+#endif
+
 // Time zones
 
 typedef struct _RTL_TIME_ZONE_INFORMATION
@@ -6532,6 +6542,32 @@ RtlAddMandatoryAce(
     );
 #endif
 
+#if (PHNT_VERSION >= PHNT_WIN8)
+NTSYSAPI
+NTSTATUS
+NTAPI
+RtlAddResourceAttributeAce(
+    _Inout_ PACL Acl,
+    _In_ ULONG AceRevision,
+    _In_ ULONG AceFlags,
+    _In_ ULONG AccessMask,
+    _In_ PSID Sid,
+    _In_ PCLAIM_SECURITY_ATTRIBUTES_INFORMATION AttributeInfo,
+    _Out_ PULONG ReturnLength
+    );
+
+NTSYSAPI
+NTSTATUS
+NTAPI
+RtlAddScopedPolicyIDAce(
+    _Inout_ PACL Acl,
+    _In_ ULONG AceRevision,
+    _In_ ULONG AceFlags,
+    _In_ ULONG AccessMask,
+    _In_ PSID Sid
+    );
+#endif
+
 // Named pipes
 
 NTSYSAPI
@@ -6768,7 +6804,7 @@ RtlQueryValidationRunlevel(
 // begin_private
 
 NTSYSAPI
-PVOID
+HANDLE
 NTAPI
 RtlCreateBoundaryDescriptor(
     _In_ PUNICODE_STRING Name,
@@ -6779,14 +6815,14 @@ NTSYSAPI
 VOID
 NTAPI
 RtlDeleteBoundaryDescriptor(
-    _In_ PVOID BoundaryDescriptor
+    _In_ HANDLE BoundaryDescriptor
     );
 
 NTSYSAPI
 NTSTATUS
 NTAPI
 RtlAddSIDToBoundaryDescriptor(
-    _Inout_ PVOID *BoundaryDescriptor,
+    _Inout_ PHANDLE BoundaryDescriptor,
     _In_ PSID RequiredSid
     );
 
@@ -6796,7 +6832,7 @@ NTSYSAPI
 NTSTATUS
 NTAPI
 RtlAddIntegrityLabelToBoundaryDescriptor(
-    _Inout_ PVOID *BoundaryDescriptor,
+    _Inout_ PHANDLE BoundaryDescriptor,
     _In_ PSID IntegrityLabel
     );
 #endif
@@ -8194,17 +8230,6 @@ NTAPI
 RtlSetPortableOperatingSystem(
     _In_ BOOLEAN IsPortable
     );
-
-#if (PHNT_VERSION >= PHNT_THRESHOLD)
-
-NTSYSAPI
-OS_DEPLOYEMENT_STATE_VALUES
-NTAPI
-RtlOsDeploymentState(
-    _Reserved_ _In_ ULONG Flags
-    );
-
-#endif
 
 #if (PHNT_VERSION >= PHNT_VISTA)
 

@@ -155,6 +155,9 @@
 #define FILE_PIPE_CLIENT_END 0x00000000
 #define FILE_PIPE_SERVER_END 0x00000001
 
+// Win32 pipe instance limit (0xff)
+#define FILE_PIPE_UNLIMITED_INSTANCES 0xffffffff 
+
 // Mailslot values
 
 #define MAILSLOT_SIZE_AUTO 0
@@ -1295,7 +1298,7 @@ NtQueryDirectoryFileEx(
     _In_opt_ PIO_APC_ROUTINE ApcRoutine,
     _In_opt_ PVOID ApcContext,
     _Out_ PIO_STATUS_BLOCK IoStatusBlock,
-    _Out_ PVOID FileInformation,
+    _Out_writes_bytes_(Length) PVOID FileInformation,
     _In_ ULONG Length,
     _In_ FILE_INFORMATION_CLASS FileInformationClass,
     _In_ ULONG QueryFlags,
@@ -1753,7 +1756,6 @@ typedef enum _IO_SESSION_STATE
     IoSessionStateTerminated,
     IoSessionStateMax
 } IO_SESSION_STATE;
-
 
 // Sessions
 
